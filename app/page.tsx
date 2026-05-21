@@ -130,9 +130,9 @@ export default function ChatPage() {
   };
 
   return (
-    <div ref={containerRef} id="chat-container" className="flex flex-col h-dvh w-full bg-gray-50 text-gray-800 overflow-hidden">
+    <div ref={containerRef} id="chat-container" className="fixed inset-0 flex flex-col w-full bg-gray-50 text-gray-800 overflow-hidden">
       {/* Header */}
-      <header id="chat-header" className="bg-white border-b pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-4 px-4 flex items-center justify-between shadow-sm shrink-0">
+      <header id="chat-header" className="sticky top-0 z-20 shrink-0 bg-white border-b pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-4 px-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center">
           <div id="cv-avatar" className="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold mr-3 shrink-0">CV</div>
           <div>
@@ -159,7 +159,7 @@ export default function ChatPage() {
       </header>
 
       {/* Chat Area */}
-      <main ref={scrollRef} id="chat-message-list" className="flex-grow overflow-y-auto p-4 space-y-4">
+      <main ref={scrollRef} id="chat-message-list" className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, idx) => (
           <div key={idx} id={`msg-wrapper-${idx}`} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div id={`msg-${idx}`} className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
@@ -181,13 +181,18 @@ export default function ChatPage() {
       </main>
 
       {/* Input Bar */}
-      <footer id="chat-footer" className="p-4 bg-white border-t pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
+      <footer id="chat-footer" className="shrink-0 p-4 bg-white border-t pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
         <form id="chat-input-form" onSubmit={handleSend} className="max-w-4xl mx-auto flex space-x-2">
           <input
             id="chat-text-input"
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onFocus={(e) => {
+              requestAnimationFrame(() => {
+                e.target.scrollIntoView({ block: "nearest", behavior: "smooth" });
+              });
+            }}
             disabled={isLoading}
             placeholder="Tanyakan sesuatu..."
             className="flex-grow p-3 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
