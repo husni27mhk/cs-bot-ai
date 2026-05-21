@@ -25,7 +25,9 @@ Jangan gunakan prefix `NEXT_PUBLIC_` untuk token.
 | Node.js version | **20** |
 
 4. Tambahkan environment variables di atas
-5. Deploy — URL: `https://chatbot-cs.<subdomain>.workers.dev` (atau custom domain)
+5. Deploy — URL: `https://cs-bot-ai.<subdomain>.workers.dev` (atau custom domain)
+
+**Penting:** `name` dan `service` di [`wrangler.jsonc`](wrangler.jsonc) harus sama dengan nama proyek Worker di dashboard Cloudflare (saat ini: `cs-bot-ai`).
 
 ## Local preview (Workers runtime)
 
