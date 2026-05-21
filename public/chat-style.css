@@ -1,0 +1,76 @@
+/* Custom Scrollbar for Chat Area */
+#chat-area::-webkit-scrollbar {
+  width: 5px;
+}
+
+#chat-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#chat-area::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 10px;
+}
+
+#chat-area::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* Animations for Chat Bubbles */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.message-bubble {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+/* Three-dot typing animation */
+.typing-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.typing-dots span {
+  width: 6px;
+  height: 6px;
+  background-color: #9ca3af;
+  border-radius: 50%;
+  display: inline-block;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { 
+    transform: scale(0);
+  } 40% { 
+    transform: scale(1.0);
+  }
+}
+
+/* Custom styles for layouts */
+#chat-container {
+  height: 100%;
+}
+
+@media (min-width: 1024px) {
+  #chat-container {
+    height: 100vh;
+  }
+}
