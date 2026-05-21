@@ -39,6 +39,43 @@ export default function ChatPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [viewportLayout, setViewportLayout] = useState<{
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
+  // Sesuaikan tinggi/posisi layout dengan area terlihat (di atas keyboard di mobile)
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const syncViewport = () => {
+      setViewportLayout({
+        top: vv.offsetTop,
+        left: vv.offsetLeft,
+        width: vv.width,
+        height: vv.height,
+      });
+      requestAnimationFrame(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      });
+    };
+
+    syncViewport();
+    vv.addEventListener("resize", syncViewport);
+    vv.addEventListener("scroll", syncViewport);
+    window.addEventListener("orientationchange", syncViewport);
+
+    return () => {
+      vv.removeEventListener("resize", syncViewport);
+      vv.removeEventListener("scroll", syncViewport);
+      window.removeEventListener("orientationchange", syncViewport);
+    };
+  }, []);
 
   // Auto scroll ke bawah setiap ada pesan baru
   useEffect(() => {
@@ -130,7 +167,21 @@ export default function ChatPage() {
   };
 
   return (
-    <div ref={containerRef} id="chat-container" className="fixed inset-0 flex flex-col w-full bg-gray-50 text-gray-800 overflow-hidden">
+    <div
+      ref={containerRef}
+      id="chat-container"
+      className="fixed z-10 flex flex-col bg-gray-50 text-gray-800 overflow-hidden"
+      style={
+        viewportLayout
+          ? {
+              top: viewportLayout.top,
+              left: viewportLayout.left,
+              width: viewportLayout.width,
+              height: viewportLayout.height,
+            }
+          : { inset: 0, width: "100%" }
+      }
+    >
       {/* Header */}
       <header id="chat-header" className="sticky top-0 z-20 shrink-0 bg-white border-b pt-[calc(1rem+env(safe-area-inset-top,0px))] pb-4 px-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center">
@@ -188,11 +239,6 @@ export default function ChatPage() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onFocus={(e) => {
-              requestAnimationFrame(() => {
-                e.target.scrollIntoView({ block: "nearest", behavior: "smooth" });
-              });
-            }}
             disabled={isLoading}
             placeholder="Tanyakan sesuatu..."
             className="flex-grow p-3 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
